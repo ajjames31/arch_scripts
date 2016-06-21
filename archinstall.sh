@@ -97,9 +97,15 @@ echo "Installing Bootloader..."
 pacman -S --noconfirm grub os-prober
 grub-install /dev/sdX
 grub-mkconfig -o /boot/grub/grub.cfg
+clear
 
 #installing additional packages for video, audio, drivers
+echo "Installing additional packages for video, audio, and drivers..."
+pacman -S --noconfirm wpa_supplicant dialog iw reflector rsync mlocate bash-completion
+pacman -S --noconfirm xf86-video-ati xorg-server xorg-server-utils xorg-xinit xorg-twm xterm
+pacman -S --noconfirm alsa-utils pulseaudio pulseaudio-alsa
+pacman -S --noconfirm networkmanager xfce4-notifyd network-manager-applet 
+pacman -S --noconfirm xf86-input-synaptics xdg-user-dirs gvfs file-roller ttf-dejavu libmtp gvfs-mtp
+clear
 
-
-
-
+echo "The base of Arch Linux is installed! You may now install the Desktop Environment of your choice!"
