@@ -38,6 +38,8 @@ clear
 echo "We need to set up sudo permissions for your system."
 echo "The sudoers file will be opened, please uncomment your desired choice."
 echo "When you are finished, simply hit control-o to save and control-x to continue"
+echo "Please hit enter to continue"
+read 
 EDITOR=nano visudo
 clear
 
@@ -63,7 +65,7 @@ pacman -S --noconfirm xf86-input-synaptics xdg-user-dirs gvfs file-roller ttf-de
 clear
 
 #desktop manager
-pacman -S --noconfirm lightdm lightdm-gtk-greeter lightdm-gtk-greeter-setttings
+pacman -S --noconfirm lightdm lightdm-gtk-greeter lightdm-gtk-greeter-settings
 
 #Desktops
 #echo "You have selected gnome3, it is being installed now"
