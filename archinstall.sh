@@ -1,9 +1,12 @@
 #!/bin/bash
 
+
 #This is a script to install Arch Linux
-
-echo "Arch Linux install script"
-
+clear
+echo "===================================="
+echo "Arch Linux Install Script"
+echo "===================================="
+echo
 #list drives
 lsblk -S
 
@@ -63,7 +66,7 @@ clear
 
 #generate locale
 echo "Generating locale..."
-echo "en_US.UTF-8 UTF-8" >> /etc/locale.gen
+echo en_US.UTF-8 UTF-8 >> /etc/locale.gen
 locale-gen
 locale > /etc/locale.conf
 clear
@@ -83,7 +86,7 @@ clear
 #setting sudo permissions
 echo "setting sudo permissions...
 touch /etc/sudoers.d/01_wheel
-echo "%wheel      ALL=(ALL) ALL, NOPASSWD" >> /etc/sudoers.d/O1_wheel
+echo %wheel ALL=(ALL) NOPASSWD: ALL >> /etc/sudoers.d/O1_wheel
 sleep 3
 clear
 
@@ -95,7 +98,7 @@ clear
 #installing grub
 echo "Installing Bootloader..."
 pacman -S --noconfirm grub os-prober
-grub-install /dev/sdX
+grub-install $drive
 grub-mkconfig -o /boot/grub/grub.cfg
 clear
 
@@ -107,5 +110,20 @@ pacman -S --noconfirm alsa-utils pulseaudio pulseaudio-alsa
 pacman -S --noconfirm networkmanager xfce4-notifyd network-manager-applet 
 pacman -S --noconfirm xf86-input-synaptics xdg-user-dirs gvfs file-roller ttf-dejavu libmtp gvfs-mtp
 clear
+
+#desktop manager
+pacman -S --noconfirm lightdm lightdm-gtk-greeter lightdm-gtk-greeter-setttings
+
+#Desktops
+#echo "You have selected gnome3, it is being installed now"
+#pacman -S --noconfirm gnome
+#echo "You have selected xfce4, it is being installed now"
+#pacman -S --noconfirm xfce4 xfce4-goodies
+#echo "You have selected lxde, it is being installed now"
+#pacman -S --noconfirm lxde
+
+#starting services
+systemctl enable NetworkManager
+systemctl enable lightdm.service
 
 echo "The base of Arch Linux is installed! You may now install the Desktop Environment of your choice!"
