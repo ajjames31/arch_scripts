@@ -35,10 +35,10 @@ sleep 3
 clear
 
 #setting sudo permissions
-echo "setting sudo permissions...
-touch /etc/sudoers.d/01_wheel
-echo %wheel ALL=(ALL) NOPASSWD: ALL >> /etc/sudoers.d/O1_wheel
-sleep 3
+echo "We need to set up sudo permissions for your system."
+echo "The sudoers file will be opened, please uncomment your desired choice."
+echo "When you are finished, simply hit control-o to save and control-x to continue"
+EDITOR=nano visudo
 clear
 
 #mkinit
