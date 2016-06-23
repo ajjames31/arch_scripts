@@ -60,6 +60,7 @@ clear
 #Copying the script to the root of the new system
 git clone https://github.com/ajjames31/arch_scripts /mnt/arch_scripts
 chmod +x /mnt/arch_scripts/archinstall2.sh
+clear
 
 #User Instructions
 echo "The base Arch Linux system has been installed on your machine!!!!!"

@@ -45,7 +45,7 @@ clear
 #setting sudo permissions
 echo "We need to set up sudo permissions for your system."
 echo "There are 2 options. You can require a password to use sudo, or not require a password."
-echo "Would you like to be prompted for a password when using sudo to elevate permissions?"
+echo "Would you like to be prompted for a password when using sudo to elevate permissions? Enter y/n"
 read sudoyn
 	if [ "$sudoyn" = "y" ]
 		then mv /etc/sudoers /etc/sudoers.backup
