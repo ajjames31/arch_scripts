@@ -58,7 +58,6 @@ genfstab -L /mnt >> /mnt/etc/fstab
 clear
 
 #Copying the script to the root of the new system
-touch /mnt/arch_scripts
 git clone https://github.com/ajjames31/arch_scripts /mnt/arch_scripts
 chmod +x /mnt/arch_scripts/archinstall2.sh
 /mnt/arch_scripts/archinstall2.sh

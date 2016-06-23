@@ -55,10 +55,6 @@ read sudoyn
 	fi
 clear
 
-#mkinit
-echo "Running mkinit..."
-mkinitcpio -p linux
-clear
 
 #installing grub
 echo "Installing Bootloader..."
