@@ -1,9 +1,12 @@
+#!/bin/bash
+
 #this is the second part of the install script, after you have chroot into the new intall
 
+clear
 echo "=========================="
 echo "Arch Install Script"
 echo "=========================="
-
+echo
 
 #set root password and create user
 echo "Please enter the root password for your new system."
@@ -16,31 +19,40 @@ passwd $username
 clear
 
 #generate locale
-echo "Generating locale..."
 echo en_US.UTF-8 UTF-8 >> /etc/locale.gen
 locale-gen
 locale > /etc/locale.conf
 clear
 
 #setting timezone
-echo "Setting timezone as American, central..."
-ln -s /usr/share/zoneinfo/America/Chicago /etc/localtime
+echo "Please enter your country, capitalizing the first letter. ex America"
+read country
+echo "Please enter your region, capitalizing the first letter. ex Chicago"
+read region
+echo "Setting timezone..."
+ln -s /usr/share/zoneinfo/$country/$region /etc/localtime
 sleep 3
 clear
 
 #setting hostname
-echo "Setting hostname as archpc..."
-echo archpc > /etc/hostname
+echo "Please enter a hostname for your computer in all lowercase."
+read hnpc
+echo archpc > /etc/$hnpc
 sleep 3
 clear
 
 #setting sudo permissions
 echo "We need to set up sudo permissions for your system."
-echo "The sudoers file will be opened, please uncomment your desired choice."
-echo "When you are finished, simply hit control-o to save and control-x to continue"
-echo "Please hit enter to continue"
-read 
-EDITOR=nano visudo
+echo "There are 2 options. You can require a password to use sudo, or not require a password."
+echo "Would you like to be prompted for a password when using sudo to elevate permissions?"
+read sudoyn
+	if [ "$sudoyn" = "y" ]
+		then mv /etc/sudoers /etc/sudoers.backup
+		cp /arch_scripts/sudoers.passwd /etc/sudoers
+
+		else mv /etc/sudoers /etc/sudoers.backup
+		cp arch_scripts/sudoers.nopasswd /etc/sudoers
+	fi
 clear
 
 #mkinit
@@ -68,15 +80,29 @@ clear
 pacman -S --noconfirm lightdm lightdm-gtk-greeter lightdm-gtk-greeter-settings
 
 #Desktops
-#echo "You have selected gnome3, it is being installed now"
-#pacman -S --noconfirm gnome
-#echo "You have selected xfce4, it is being installed now"
-#pacman -S --noconfirm xfce4 xfce4-goodies
-#echo "You have selected lxde, it is being installed now"
-#pacman -S --noconfirm lxde
-
+echo "You may choose one of the following desktop environments to be installed for you."
+echo "Please enter the number of your choice."
+echo "1 - gnome3"
+echo "2 - kde"
+echo "3 - xfce4"
+echo "4 - lxde"
+echo "5 - mate"
+echo "6 - None, I will set up my own desktop."
+read desktop;
+	case $desktop in
+		1) pacman -S gnome;;
+		2) pacman -S plasma;;
+		3) pacman -S xfce4;;
+		4) pacman -S lxde;;
+		5) pacman -S mate;;
+		6) echo "Cool, we are almost done.";;
+		*) echo "Not a valid selection"
+			sleep 3;;
+esac
+clear
 #starting services
 systemctl enable NetworkManager
 systemctl enable lightdm.service
 
-echo "The base of Arch Linux is installed! You may now install the Desktop Environment of your choice!"
+echo "Installation is finished!!! This script will exit. You may reboot your system now,"
+echo "or continue working in the live environment."

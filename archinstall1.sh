@@ -8,7 +8,8 @@ echo "Arch Linux Install Script"
 echo "===================================="
 echo
 #list drives
-lsblk -S
+echo "Below is a list of drives available on your computer."
+lsblk --nodeps
 
 #Choose drive
 echo "Enter the drive that you want to use in /dev/sdx format."
@@ -22,34 +23,44 @@ read ans1
           then cfdisk $drive
      
      fi
-     clear
+     
+clear
      
 #select partition
 echo "Below is a list of the partitions on $drive."
-lsblk
+lsblk -lno NAME,SIZE,TYPE $drive
 echo "Enter the partition where you want to install Arch."
 echo "Please use /dev/sda1 format" 
 read part
-echo "Enter the partition for your swap" 
-read spart
+echo "Would you like to use a SWAP partition? (y/n)" 
+read swapyn
+	if [ "$swapyn" = "y" ]
+		then echo "Enter the partition that you would like to use as SWAP in /dev/sda1 format."
+		read spart
+		mkswap $spart
+		swapon $spart
+	fi
 
 #format and mount partitions 
 mkfs.ext4 $part
-mkswap &spart
 mount $part /mnt
-swapon $spart
 clear
 
 #install base
 echo "Press enter to begin installing Arch onto $part"
 read 
-pacstrap /mnt base base-devel 
+pacstrap /mnt base base-devel git 
 clear
 
 #generate fstab
 echo "Generating fstab..."
 genfstab -U /mnt >> /mnt/etc/fstab
 clear
+
+#Copying the script to the root of the new system
+git clone https://github.com/ajjames31/arch_scripts /mnt
+chmod +x /mnt/archinstall2
+/mnt/archinstall2
 
 #chroot into installation
 arch-chroot /mnt /bin/bash
