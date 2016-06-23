@@ -3,9 +3,9 @@
 #this is the second part of the install script, after you have chroot into the new intall
 
 clear
-echo "=========================="
-echo "Arch Install Script"
-echo "=========================="
+echo "==========================="
+echo "Arch Install Script, Part 2"
+echo "==========================="
 echo
 
 #set root password and create user
@@ -71,7 +71,7 @@ echo "Installing additional packages for video, audio, and drivers..."
 pacman -S --noconfirm wpa_supplicant dialog iw reflector rsync mlocate bash-completion
 pacman -S --noconfirm xf86-video-ati xorg-server xorg-server-utils xorg-xinit xorg-twm xterm
 pacman -S --noconfirm alsa-utils pulseaudio pulseaudio-alsa
-pacman -S --noconfirm networkmanager xfce4-notifyd network-manager-applet 
+pacman -S --noconfirm networkmanager network-manager-applet 
 pacman -S --noconfirm xf86-input-synaptics xdg-user-dirs gvfs file-roller ttf-dejavu libmtp gvfs-mtp
 clear
 
@@ -90,11 +90,11 @@ echo "5 - mate"
 echo "6 - None, I will set up my own desktop."
 read desktop;
 	case $desktop in
-		1) pacman -S gnome;;
-		2) pacman -S plasma;;
-		3) pacman -S xfce4;;
-		4) pacman -S lxde;;
-		5) pacman -S mate;;
+		1) pacman -S --noconfirm gnome;;
+		2) pacman -S --noconfirm plasma;;
+		3) pacman -S --noconfirm xfce4;;
+		4) pacman -S --noconfirm lxde;;
+		5) pacman -S --noconfirm mate;;
 		6) echo "Cool, we are almost done.";;
 		*) echo "Not a valid selection"
 			sleep 3;;
@@ -105,6 +105,13 @@ clear
 systemctl enable NetworkManager
 systemctl enable lightdm.service
 clear
+
+#User choice packages
+echo "If you would like to install additional packages now, such as Firefox or VLC,"
+echo "please type in the package names seperated by a space"
+echo "Example: vlc firefox leafpad"
+read userpacks
+pacman -S --noconfirm $userpacks
 
 echo "Installation is finished!!! This script will exit. You may reboot your system now,"
 echo "or continue working in the live environment."

@@ -60,7 +60,14 @@ clear
 #Copying the script to the root of the new system
 git clone https://github.com/ajjames31/arch_scripts /mnt/arch_scripts
 chmod +x /mnt/arch_scripts/archinstall2.sh
-/mnt/arch_scripts/archinstall2.sh
+
+#User Instructions
+echo "The base Arch Linux system has been installed on your machine!!!!!"
+echo "The script is about to exit, and you will be in your new system."
+echo "You may run the following command to continue the guided install,"
+echo "or you can continue on your own."
+echo "/arch_scripts/archinstall2.sh"
+sleep 8
 
 #chroot into installation
 arch-chroot /mnt /bin/bash
