@@ -54,7 +54,7 @@ clear
 
 #generate fstab
 echo "Generating fstab..."
-genfstab -L /mnt >> /mnt/etc/fstab
+genfstab -U /mnt >> /mnt/etc/fstab
 clear
 
 #Copying the script to the root of the new system

@@ -31,7 +31,8 @@ echo "Please enter your region, capitalizing the first letter. ex Chicago"
 read region
 echo "Setting timezone..."
 ln -s /usr/share/zoneinfo/$country/$region /etc/localtime
-sleep 3
+date
+sleep 5
 clear
 
 #setting hostname
@@ -57,9 +58,11 @@ clear
 
 
 #installing grub
+echo "Please enter the drive where you want the bootloader to be installed in /dev/sdx format."
+read bldrive
 echo "Installing Bootloader..."
 pacman -S --noconfirm grub os-prober
-grub-install $drive
+grub-install $bldrive
 grub-mkconfig -o /boot/grub/grub.cfg
 clear
 
