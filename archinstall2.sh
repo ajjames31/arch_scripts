@@ -78,6 +78,7 @@ clear
 
 #desktop manager
 pacman -S --noconfirm lightdm lightdm-gtk-greeter lightdm-gtk-greeter-settings
+clear
 
 #Desktops
 echo "You may choose one of the following desktop environments to be installed for you."
@@ -100,9 +101,11 @@ read desktop;
 			sleep 3;;
 esac
 clear
+
 #starting services
 systemctl enable NetworkManager
 systemctl enable lightdm.service
+clear
 
 echo "Installation is finished!!! This script will exit. You may reboot your system now,"
 echo "or continue working in the live environment."

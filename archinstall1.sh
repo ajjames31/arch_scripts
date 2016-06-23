@@ -54,13 +54,14 @@ clear
 
 #generate fstab
 echo "Generating fstab..."
-genfstab -U /mnt >> /mnt/etc/fstab
+genfstab -L /mnt >> /mnt/etc/fstab
 clear
 
 #Copying the script to the root of the new system
-git clone https://github.com/ajjames31/arch_scripts /mnt
-chmod +x /mnt/archinstall2
-/mnt/archinstall2
+touch /mnt/arch_scripts
+git clone https://github.com/ajjames31/arch_scripts /mnt/arch_scripts
+chmod +x /mnt/arch_scripts/archinstall2.sh
+/mnt/arch_scripts/archinstall2.sh
 
 #chroot into installation
 arch-chroot /mnt /bin/bash
