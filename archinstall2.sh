@@ -38,7 +38,7 @@ clear
 #setting hostname
 echo "Please enter a hostname for your computer in all lowercase."
 read hnpc
-echo archpc > /etc/$hnpc
+echo $hnpc > /etc/hostname
 sleep 3
 clear
 
