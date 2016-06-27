@@ -125,37 +125,39 @@ echo "Would you like to install support for the Arch User Repository?"
 echo "Enter y/n"
 read aur
 	if [ "$aur" = "y" ]
-		then mv /mnt/etc/pacman.conf /mnt/etc/pacman.conf.backup
-		cp arch_scripts/pacman.conf /mnt/etc/pacman.conf
-		echo "Bonus! Colors and ILoveCandy activated as well!!!"
-		sleep 5
-		arch_chroot pacman -S yaourt
+		then mv /mnt/etc/pacman.conf /mnt/etc/pacman.conf.backup;
+		cp arch_scripts/pacman.conf /mnt/etc/pacman.conf;
+		cp arch_scripts/pacman.conf /etc/pacman.conf;
+		echo "Bonus! Colors and ILoveCandy activated as well!!!";
+		sleep 5;
+		arch_chroot "pacman -Syy";
+		arch_chroot "pacman -S yaourt";
 	fi
 
 #run mkinit
-echo "Running mkinitcpio...
+echo "Running mkinitcpio..."
 arch_chroot "mkinitcpio -p linux"
 
 #installing grub
 echo "Please enter the drive where you want the bootloader to be installed in /dev/sdx format."
 read bldrive
 echo "Installing Bootloader..."
-arch_chroot pacman -S --noconfirm grub os-prober
+arch_chroot "pacman -S --noconfirm grub os-prober"
 arch_chroot "grub-install $bldrive"
 arch_chroot "grub-mkconfig -o /boot/grub/grub.cfg"
 clear
 
 #installing additional packages for video, audio, drivers
 echo "Installing additional packages for video, audio, and drivers..."
-arch_chroot pacman -S --noconfirm wpa_supplicant dialog iw reflector rsync mlocate bash-completion
-arch_chroot pacman -S --noconfirm xf86-video-ati xorg-server xorg-server-utils xorg-xinit xorg-twm xterm
-arch_chroot pacman -S --noconfirm alsa-utils pulseaudio pulseaudio-alsa
-arch_chroot pacman -S --noconfirm networkmanager network-manager-applet 
-arch_chroot pacman -S --noconfirm xf86-input-synaptics xdg-user-dirs gvfs file-roller ttf-dejavu libmtp gvfs-mtp
+arch_chroot "pacman -S --noconfirm wpa_supplicant dialog iw reflector rsync mlocate bash-completion"
+arch_chroot "pacman -S --noconfirm xf86-video-ati xorg-server xorg-server-utils xorg-xinit xorg-twm xterm"
+arch_chroot "pacman -S --noconfirm alsa-utils pulseaudio pulseaudio-alsa"
+arch_chroot "pacman -S --noconfirm networkmanager network-manager-applet "
+arch_chroot "pacman -S --noconfirm xf86-input-synaptics xdg-user-dirs gvfs file-roller ttf-dejavu libmtp gvfs-mtp"
 clear
 
 #desktop manager
-arch_chroot pacman -S /mnt --noconfirm lightdm lightdm-gtk-greeter lightdm-gtk-greeter-settings
+arch_chroot "pacman -S --noconfirm lightdm lightdm-gtk-greeter lightdm-gtk-greeter-settings"
 clear
 
 
@@ -170,11 +172,11 @@ echo "5 - mate"
 echo "6 - None, I will set up my own desktop."
 read desktop;
 	case $desktop in
-		1) arch_chroot pacman -S --noconfirm gnome;;
-		2) arch_chroot pacman -S --noconfirm plasma;;
-		3) arch_chroot pacman -S --noconfirm xfce4;;
-		4) arch_chroot pacman -S --noconfirm lxde;;
-		5) arch_chroot pacman -S --noconfirm mate;;
+		1) arch_chroot "pacman -S --noconfirm gnome";;
+		2) arch_chroot "pacman -S --noconfirm plasma";;
+		3) arch_chroot "pacman -S --noconfirm xfce4";;
+		4) arch_chroot "pacman -S --noconfirm lxde";;
+		5) arch_chroot "pacman -S --noconfirm mate";;
 		6) echo "Cool, we are almost done.";;
 		*) echo "Not a valid selection"
 			sleep 3;;
@@ -191,7 +193,7 @@ echo "If you would like to install additional packages now, such as Firefox or V
 echo "please type in the package names seperated by a space"
 echo "Example: vlc firefox leafpad"
 read userpacks
-arch_chroot pacman -S --noconfirm $userpacks
+arch_chroot "pacman -S --noconfirm $userpacks"
 
 #reboot
 echo "Installation is Finished!!! Press control-c to exit the script and stay in the live"
