@@ -8,8 +8,11 @@ echo "Arch Linux Install Script"
 echo "===================================="
 echo
 #update pacman mirrorlist
-echo "Updated pacman mirrorlist..."
+echo "Updating pacman mirrorlist..."
 reflector --verbose --country 'United States' -l 200 -p http --sort rate --save /etc/pacman.d/mirrorlist
+pacman -S archlinux-keyring
+pacman-keys --refresh-keys
+clear
 
 #list drives
 echo "Below is a list of drives available on your computer."
@@ -63,7 +66,7 @@ clear
 
 #chroot code, adapted from AIF. Excellent code!!!
 arch_chroot() {
-    arch-chroot $MOUNTPOINT /bin/bash -c "${1}"
+    arch-chroot /mnt /bin/bash -c "${1}"
 }  
 
 #set root password and create user
@@ -123,9 +126,11 @@ echo "Enter y/n"
 read aur
 	if [ "$aur" = "y" ]
 		then mv /mnt/etc/pacman.conf /mnt/etc/pacman.conf.backup
-		cp /pacman.conf /mnt/etc/pacman.conf
+		cp arch_scripts/pacman.conf /mnt/etc/pacman.conf
 		echo "Bonus! Colors and ILoveCandy activated as well!!!"
 		sleep 5
+		arch_chroot pacman -S yaourt
+	fi
 
 #run mkinit
 echo "Running mkinitcpio...
@@ -135,22 +140,22 @@ arch_chroot "mkinitcpio -p linux"
 echo "Please enter the drive where you want the bootloader to be installed in /dev/sdx format."
 read bldrive
 echo "Installing Bootloader..."
-pacman -S /mnt --noconfirm grub os-prober
+arch_chroot pacman -S --noconfirm grub os-prober
 arch_chroot "grub-install $bldrive"
 arch_chroot "grub-mkconfig -o /boot/grub/grub.cfg"
 clear
 
 #installing additional packages for video, audio, drivers
 echo "Installing additional packages for video, audio, and drivers..."
-pacman -S /mnt --noconfirm wpa_supplicant dialog iw reflector rsync mlocate bash-completion
-pacman -S /mnt --noconfirm xf86-video-ati xorg-server xorg-server-utils xorg-xinit xorg-twm xterm
-pacman -S /mnt --noconfirm alsa-utils pulseaudio pulseaudio-alsa
-pacman -S /mnt --noconfirm networkmanager network-manager-applet 
-pacman -S /mnt --noconfirm xf86-input-synaptics xdg-user-dirs gvfs file-roller ttf-dejavu libmtp gvfs-mtp
+arch_chroot pacman -S --noconfirm wpa_supplicant dialog iw reflector rsync mlocate bash-completion
+arch_chroot pacman -S --noconfirm xf86-video-ati xorg-server xorg-server-utils xorg-xinit xorg-twm xterm
+arch_chroot pacman -S --noconfirm alsa-utils pulseaudio pulseaudio-alsa
+arch_chroot pacman -S --noconfirm networkmanager network-manager-applet 
+arch_chroot pacman -S --noconfirm xf86-input-synaptics xdg-user-dirs gvfs file-roller ttf-dejavu libmtp gvfs-mtp
 clear
 
 #desktop manager
-pacman -S /mnt --noconfirm lightdm lightdm-gtk-greeter lightdm-gtk-greeter-settings
+arch_chroot pacman -S /mnt --noconfirm lightdm lightdm-gtk-greeter lightdm-gtk-greeter-settings
 clear
 
 
@@ -165,11 +170,11 @@ echo "5 - mate"
 echo "6 - None, I will set up my own desktop."
 read desktop;
 	case $desktop in
-		1) pacman -S /mnt --noconfirm gnome;;
-		2) pacman -S /mnt --noconfirm plasma;;
-		3) pacman -S /mnt --noconfirm xfce4;;
-		4) pacman -S /mnt --noconfirm lxde;;
-		5) pacman -S /mnt --noconfirm mate;;
+		1) arch_chroot pacman -S --noconfirm gnome;;
+		2) arch_chroot pacman -S --noconfirm plasma;;
+		3) arch_chroot pacman -S --noconfirm xfce4;;
+		4) arch_chroot pacman -S --noconfirm lxde;;
+		5) arch_chroot pacman -S --noconfirm mate;;
 		6) echo "Cool, we are almost done.";;
 		*) echo "Not a valid selection"
 			sleep 3;;
@@ -186,7 +191,7 @@ echo "If you would like to install additional packages now, such as Firefox or V
 echo "please type in the package names seperated by a space"
 echo "Example: vlc firefox leafpad"
 read userpacks
-pacman -S /mnt --noconfirm $userpacks
+arch_chroot pacman -S --noconfirm $userpacks
 
 #reboot
 echo "Installation is Finished!!! Press control-c to exit the script and stay in the live"
