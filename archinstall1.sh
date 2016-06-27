@@ -7,6 +7,10 @@ echo "===================================="
 echo "Arch Linux Install Script"
 echo "===================================="
 echo
+#update pacman mirrorlist
+echo "Updated pacman mirrorlist..."
+reflector --verbose --country 'United States' -l 200 -p http --sort rate --save /etc/pacman.d/mirrorlist
+
 #list drives
 echo "Below is a list of drives available on your computer."
 lsblk --nodeps
@@ -57,19 +61,139 @@ echo "Generating fstab..."
 genfstab -U /mnt >> /mnt/etc/fstab
 clear
 
-#Copying the script to the root of the new system
-git clone https://github.com/ajjames31/arch_scripts /mnt/arch_scripts
-chmod +x /mnt/arch_scripts/archinstall2.sh
+#chroot code, adapted from AIF. Excellent code!!!
+arch_chroot() {
+    arch-chroot $MOUNTPOINT /bin/bash -c "${1}"
+}  
+
+#set root password and create user
+echo "Please enter the root password for your new system."
+arch_chroot "passwd"
+echo "Please enter a user name for a new user."
+read username
+arch_chroot "useradd -m -g users -G adm,lp,wheel,power,audio,video -s /bin/bash $username"
+echo "Please enter a password for $username."
+arch_chroot "passwd $username"
 clear
 
-#User Instructions
-echo "The base Arch Linux system has been installed on your machine!!!!!"
-echo "The script is about to exit, and you will be in your new system."
-echo "You may run the following command to continue the guided install,"
-echo "or you can continue on your own."
-echo "/arch_scripts/archinstall2.sh"
-sleep 8
+#generate locale
+echo en_US.UTF-8 UTF-8 >> /mnt/etc/locale.gen
+arch_chroot "locale-gen"
+echo "LANG=en_US.UTF-8 UTF-8" > /mnt/etc/locale.conf
+clear
 
-#chroot into installation
-arch-chroot /mnt /bin/bash
+#setting timezone
+echo "Please enter your country, capitalizing the first letter. ex America"
+read country
+echo "Please enter your region, capitalizing the first letter. ex Chicago"
+read region
+echo "Setting timezone..."
+arch_chroot "ln -s /usr/share/zoneinfo/$country/$region /etc/localtime"
+date
+sleep 5
+clear
+
+#setting hw clock
+arch_chroot "hwclock --systohc --utc"
+
+#setting hostname
+echo "Please enter a hostname for your computer in all lowercase."
+read hnpc
+arch_chroot "echo $hnpc > /etc/hostname"
+sleep 3
+clear
+
+#setting sudo permissions
+echo "We need to set up sudo permissions for your system."
+echo "There are 2 options. You can require a password to use sudo, or not require a password."
+echo "Would you like to be prompted for a password when using sudo to elevate permissions? Enter y/n"
+read sudoyn
+	if [ "$sudoyn" = "y" ]
+		then mv /mnt/etc/sudoers /mnt/etc/sudoers.backup
+		cp /arch_scripts/sudoers.passwd /mnt/etc/sudoers
+
+		else mv /mnt/etc/sudoers /mnt/etc/sudoers.backup
+		cp arch_scripts/sudoers.nopasswd /mnt/etc/sudoers
+	fi
+clear
+
+#AUR support
+echo "Would you like to install support for the Arch User Repository?"
+echo "Enter y/n"
+read aur
+	if [ "$aur" = "y" ]
+		then mv /mnt/etc/pacman.conf /mnt/etc/pacman.conf.backup
+		cp /pacman.conf /mnt/etc/pacman.conf
+		echo "Bonus! Colors and ILoveCandy activated as well!!!"
+		sleep 5
+
+#run mkinit
+echo "Running mkinitcpio...
+arch_chroot "mkinitcpio -p linux"
+
+#installing grub
+echo "Please enter the drive where you want the bootloader to be installed in /dev/sdx format."
+read bldrive
+echo "Installing Bootloader..."
+pacman -S /mnt --noconfirm grub os-prober
+arch_chroot "grub-install $bldrive"
+arch_chroot "grub-mkconfig -o /boot/grub/grub.cfg"
+clear
+
+#installing additional packages for video, audio, drivers
+echo "Installing additional packages for video, audio, and drivers..."
+pacman -S /mnt --noconfirm wpa_supplicant dialog iw reflector rsync mlocate bash-completion
+pacman -S /mnt --noconfirm xf86-video-ati xorg-server xorg-server-utils xorg-xinit xorg-twm xterm
+pacman -S /mnt --noconfirm alsa-utils pulseaudio pulseaudio-alsa
+pacman -S /mnt --noconfirm networkmanager network-manager-applet 
+pacman -S /mnt --noconfirm xf86-input-synaptics xdg-user-dirs gvfs file-roller ttf-dejavu libmtp gvfs-mtp
+clear
+
+#desktop manager
+pacman -S /mnt --noconfirm lightdm lightdm-gtk-greeter lightdm-gtk-greeter-settings
+clear
+
+
+#Desktops
+echo "You may choose one of the following desktop environments to be installed for you."
+echo "Please enter the number of your choice."
+echo "1 - gnome3"
+echo "2 - kde"
+echo "3 - xfce4"
+echo "4 - lxde"
+echo "5 - mate"
+echo "6 - None, I will set up my own desktop."
+read desktop;
+	case $desktop in
+		1) pacman -S /mnt --noconfirm gnome;;
+		2) pacman -S /mnt --noconfirm plasma;;
+		3) pacman -S /mnt --noconfirm xfce4;;
+		4) pacman -S /mnt --noconfirm lxde;;
+		5) pacman -S /mnt --noconfirm mate;;
+		6) echo "Cool, we are almost done.";;
+		*) echo "Not a valid selection"
+			sleep 3;;
+esac
+clear
+
+#starting services
+arch_chroot "systemctl enable NetworkManager"
+arch_chroot "systemctl enable lightdm.service"
+clear
+
+#User choice packages
+echo "If you would like to install additional packages now, such as Firefox or VLC,"
+echo "please type in the package names seperated by a space"
+echo "Example: vlc firefox leafpad"
+read userpacks
+pacman -S /mnt --noconfirm $userpacks
+
+#reboot
+echo "Installation is Finished!!! Press control-c to exit the script and stay in the live"
+echo "environment. Press any key to reboot."
+read
+reboot
+
+
+
 
