@@ -98,6 +98,7 @@ clear
 
 #setting hw clock
 arch_chroot "hwclock --systohc --utc"
+clear
 
 #setting hostname
 echo "Please enter a hostname for your computer in all lowercase."
@@ -133,10 +134,12 @@ read aur
 		arch_chroot "pacman -Syy";
 		arch_chroot "pacman -S yaourt";
 	fi
+clear
 
 #run mkinit
 echo "Running mkinitcpio..."
 arch_chroot "mkinitcpio -p linux"
+clear
 
 #installing grub
 echo "Please enter the drive where you want the bootloader to be installed in /dev/sdx format."
@@ -150,9 +153,13 @@ clear
 #installing additional packages for video, audio, drivers
 echo "Installing additional packages for video, audio, and drivers..."
 arch_chroot "pacman -S --noconfirm wpa_supplicant dialog iw reflector rsync mlocate bash-completion"
+clear
 arch_chroot "pacman -S --noconfirm xf86-video-ati xorg-server xorg-server-utils xorg-xinit xorg-twm xterm"
+clear
 arch_chroot "pacman -S --noconfirm alsa-utils pulseaudio pulseaudio-alsa"
+clear
 arch_chroot "pacman -S --noconfirm networkmanager network-manager-applet "
+clear
 arch_chroot "pacman -S --noconfirm xf86-input-synaptics xdg-user-dirs gvfs file-roller ttf-dejavu libmtp gvfs-mtp"
 clear
 
