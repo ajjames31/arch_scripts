@@ -82,7 +82,7 @@ clear
 #generate locale
 echo en_US.UTF-8 UTF-8 >> /mnt/etc/locale.gen
 arch_chroot "locale-gen"
-echo "LANG=en_US.UTF-8 UTF-8" > /mnt/etc/locale.conf
+echo "LANG=en_US.UTF-8" > /mnt/etc/locale.conf
 clear
 
 #setting timezone
@@ -158,7 +158,7 @@ arch_chroot "pacman -S --noconfirm xf86-video-ati xorg-server xorg-server-utils 
 clear
 arch_chroot "pacman -S --noconfirm alsa-utils pulseaudio pulseaudio-alsa"
 clear
-arch_chroot "pacman -S --noconfirm networkmanager network-manager-applet "
+arch_chroot "pacman -S --noconfirm networkmanager network-manager-applet networkmanager-dispatcher-ntpd"
 clear
 arch_chroot "pacman -S --noconfirm xf86-input-synaptics xdg-user-dirs gvfs file-roller ttf-dejavu libmtp gvfs-mtp"
 clear
@@ -201,6 +201,7 @@ echo "please type in the package names seperated by a space"
 echo "Example: vlc firefox leafpad"
 read userpacks
 arch_chroot "pacman -S --noconfirm $userpacks"
+clear
 
 #reboot
 echo "Installation is Finished!!! Press control-c to exit the script and stay in the live"
