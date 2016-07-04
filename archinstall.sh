@@ -79,39 +79,47 @@ echo "Please enter a password for $username."
 arch_chroot "passwd $username"
 clear
 
+#getting hostname
+echo "Please enter a hostname for your computer in all lowercase."
+read hnpc
+
+#getting sudo choice
+echo "We need to set up sudo permissions for your system."
+echo "There are 2 options. You can require a password to use sudo, or not require a password."
+echo "Would you like to be prompted for a password when using sudo to elevate permissions? Enter y/n"
+read sudoyn
+
+#getting AUR choice
+echo "Would you like to install support for the Arch User Repository?"
+echo "Enter y/n"
+read aur
+
 #generate locale
+echo "Generating Locale..."
 echo en_US.UTF-8 UTF-8 >> /mnt/etc/locale.gen
 arch_chroot "locale-gen"
 echo "LANG=en_US.UTF-8" > /mnt/etc/locale.conf
-clear
+export LANG=en_US.UTF-8
 
 #setting timezone
-echo "Please enter your country, capitalizing the first letter. ex America"
-read country
-echo "Please enter your region, capitalizing the first letter. ex Chicago"
-read region
-echo "Setting timezone..."
-arch_chroot "ln -s /usr/share/zoneinfo/$country/$region /etc/localtime"
+echo "Setting Timezone..."
+arch_chroot "ln -s /usr/share/zoneinfo/America/Chicago /etc/localtime"
 date
-sleep 5
-clear
 
 #setting hw clock
+echo "Setting System Clock as UTC..."
 arch_chroot "hwclock --systohc --utc"
+sleep 3
 clear
 
 #setting hostname
-echo "Please enter a hostname for your computer in all lowercase."
-read hnpc
+echo "Setting Hostname..."
 arch_chroot "echo $hnpc > /etc/hostname"
 sleep 3
 clear
 
 #setting sudo permissions
-echo "We need to set up sudo permissions for your system."
-echo "There are 2 options. You can require a password to use sudo, or not require a password."
-echo "Would you like to be prompted for a password when using sudo to elevate permissions? Enter y/n"
-read sudoyn
+echo "Setting sudo permissions..."
 	if [ "$sudoyn" = "y" ]
 		then mv /mnt/etc/sudoers /mnt/etc/sudoers.backup
 		cp /arch_scripts/sudoers.passwd /mnt/etc/sudoers
@@ -119,17 +127,15 @@ read sudoyn
 		else mv /mnt/etc/sudoers /mnt/etc/sudoers.backup
 		cp arch_scripts/sudoers.nopasswd /mnt/etc/sudoers
 	fi
+sleep 3
 clear
 
 #AUR support
-echo "Would you like to install support for the Arch User Repository?"
-echo "Enter y/n"
-read aur
 	if [ "$aur" = "y" ]
 		then mv /mnt/etc/pacman.conf /mnt/etc/pacman.conf.backup;
 		cp arch_scripts/pacman.conf /mnt/etc/pacman.conf;
 		cp arch_scripts/pacman.conf /etc/pacman.conf;
-		echo "Bonus! Colors and ILoveCandy activated as well!!!";
+		echo "Setting AUR support. Bonus! Colors and ILoveCandy activated as well!!!";
 		sleep 5;
 		arch_chroot "pacman -Syy";
 		arch_chroot "pacman -S yaourt";
@@ -139,6 +145,7 @@ clear
 #run mkinit
 echo "Running mkinitcpio..."
 arch_chroot "mkinitcpio -p linux"
+sleep 3
 clear
 
 #installing grub
