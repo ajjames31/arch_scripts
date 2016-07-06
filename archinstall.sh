@@ -56,7 +56,7 @@ clear
 #install base
 echo "Press enter to begin installing Arch onto $part"
 read 
-pacstrap /mnt base base-devel git 
+pacstrap /mnt base base-devel
 clear
 
 #generate fstab
@@ -132,13 +132,13 @@ clear
 
 #AUR support
 	if [ "$aur" = "y" ]
-		then mv /mnt/etc/pacman.conf /mnt/etc/pacman.conf.backup;
-		cp arch_scripts/pacman.conf /mnt/etc/pacman.conf;
-		cp arch_scripts/pacman.conf /etc/pacman.conf;
-		echo "Setting AUR support. Bonus! Colors and ILoveCandy activated as well!!!";
-		sleep 5;
-		arch_chroot "pacman -Syy";
-		arch_chroot "pacman -S yaourt";
+		then mv /mnt/etc/pacman.conf /mnt/etc/pacman.conf.backup
+		cp arch_scripts/pacman.conf /mnt/etc/pacman.conf
+		cp arch_scripts/pacman.conf /etc/pacman.conf
+		echo "Setting AUR support. Bonus! Colors and ILoveCandy activated as well!!!"
+		sleep 5
+		arch_chroot "pacman -Syy"
+		arch_chroot "pacman -S yaourt"
 	fi
 clear
 
@@ -152,26 +152,21 @@ clear
 echo "Please enter the drive where you want the bootloader to be installed in /dev/sdx format."
 read bldrive
 echo "Installing Bootloader..."
-arch_chroot "pacman -S --noconfirm grub os-prober"
+pacstrap /mnt grub os-prober
 arch_chroot "grub-install $bldrive"
 arch_chroot "grub-mkconfig -o /boot/grub/grub.cfg"
 clear
 
 #installing additional packages for video, audio, drivers
 echo "Installing additional packages for video, audio, and drivers..."
-arch_chroot "pacman -S --noconfirm wpa_supplicant dialog iw reflector rsync mlocate bash-completion"
 clear
-arch_chroot "pacman -S --noconfirm xf86-video-ati xorg-server xorg-server-utils xorg-xinit xorg-twm xterm"
+pacstrap /mnt xf86-video-ati xorg-server xorg-server-utils xorg-xinit xorg-twm xterm alsa-utils pulseaudio pulseaudio-alsa volumeicon parcellite
 clear
-arch_chroot "pacman -S --noconfirm alsa-utils pulseaudio pulseaudio-alsa"
-clear
-arch_chroot "pacman -S --noconfirm networkmanager network-manager-applet networkmanager-dispatcher-ntpd"
-clear
-arch_chroot "pacman -S --noconfirm xf86-input-synaptics xdg-user-dirs gvfs file-roller ttf-dejavu libmtp gvfs-mtp"
+pacstrap /mnt networkmanager network-manager-applet networkmanager-dispatcher-ntpd xf86-input-synaptics xdg-user-dirs gvfs file-roller ttf-dejavu libmtp gvfs-mtp git wpa_supplicant dialog iw reflector rsync mlocate bash-completion
 clear
 
 #desktop manager
-arch_chroot "pacman -S --noconfirm lightdm lightdm-gtk-greeter lightdm-gtk-greeter-settings"
+pacstrap /mnt lightdm lightdm-gtk-greeter lightdm-gtk-greeter-settings
 clear
 
 
