@@ -178,7 +178,8 @@ echo "2 - kde"
 echo "3 - xfce4"
 echo "4 - lxde"
 echo "5 - mate"
-echo "6 - None, I will set up my own desktop."
+echo "6 - i3"
+echo "7 - None, I will set up my own desktop."
 read desktop;
 	case $desktop in
 		1) arch_chroot "pacman -S --noconfirm gnome";;
@@ -186,7 +187,8 @@ read desktop;
 		3) arch_chroot "pacman -S --noconfirm xfce4";;
 		4) arch_chroot "pacman -S --noconfirm lxde";;
 		5) arch_chroot "pacman -S --noconfirm mate";;
-		6) echo "Cool, we are almost done.";;
+		6) chmod +x i3config/i3install.sh;i3config/i3install.sh
+		7) echo "Cool, we are almost done.";;
 		*) echo "Not a valid selection"
 			sleep 3;;
 esac
