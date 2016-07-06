@@ -35,7 +35,7 @@ clear
      
 #select partition
 echo "Below is a list of the partitions on $drive."
-lsblk -lno NAME,SIZE,TYPE $drive
+lsblk $drive
 echo "Enter the partition where you want to install Arch."
 echo "Please use /dev/sda1 format" 
 read part
@@ -138,7 +138,7 @@ clear
 		echo "Setting AUR support. Bonus! Colors and ILoveCandy activated as well!!!"
 		sleep 5
 		arch_chroot "pacman -Syy"
-		arch_chroot "pacman -S yaourt"
+		pacstrap /mnt yaourt
 	fi
 clear
 
