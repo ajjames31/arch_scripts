@@ -6,6 +6,7 @@
 pacstrap /mnt i3 dmenu lxterminal gedit vim lxappearance numix-themes deepin-icon-theme
 
 #Copying config file
-cp /i3config/i3config /mnt~/.config/i3/config
+mkdir /mnt/home/ajjames31/.config/i3
+cp /i3config/i3config /mnt/home/ajjames31/.config/i3/config
 
 echo "Install is complete!"
