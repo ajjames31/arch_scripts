@@ -127,9 +127,9 @@ clear
 #setting sudo permissions
 echo "Setting sudo permissions..."
 	if [ "$sudoyn" = "y" ]
-		then echo "%wheel ALL=(ALL) ALL" /mnt/etc/sudoers
+		then echo "%wheel ALL=(ALL) ALL" >> /mnt/etc/sudoers
 
-		else echo "%wheel ALL=(ALL) NOPASSWD: ALL" /mnt/etc/sudoers
+		else echo "%wheel ALL=(ALL) NOPASSWD: ALL" >> /mnt/etc/sudoers
 	fi
 sleep 3
 clear
@@ -137,9 +137,9 @@ clear
 #AUR support
 echo "Enabling Arch User Repository Support..."
 	if [ "$aur" = "y" ]
-		then echo "[archlinuxfr]" /mnt/etc/pacman.conf
-		echo "SigLevel = Never" /mnt/etc/pacman.conf
-		echo "Server = http://repo.archlinux.fr/$arch"
+		then echo "[archlinuxfr]" >> /mnt/etc/pacman.conf
+		echo "SigLevel = Never" >> /mnt/etc/pacman.conf
+		echo "Server = http://repo.archlinux.fr/$arch" >> /mnt/etc/pacman.conf
 		sleep 2
 		arch_chroot "pacman -Syy"
 		pacstrap /mnt yaourt
