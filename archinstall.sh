@@ -187,7 +187,7 @@ read desktop;
 		3) arch_chroot "pacman -S --noconfirm xfce4";;
 		4) arch_chroot "pacman -S --noconfirm lxde";;
 		5) arch_chroot "pacman -S --noconfirm mate";;
-		6) chmod +x i3config/i3install.sh;i3config/i3install.sh
+		6) chmod +x i3config/i3install.sh;i3config/i3install.sh;;
 		7) echo "Cool, we are almost done.";;
 		*) echo "Not a valid selection"
 			sleep 3;;
