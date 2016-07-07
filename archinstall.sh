@@ -56,7 +56,7 @@ clear
 #install base
 echo "Press enter to begin installing Arch onto $part"
 read 
-pacstrap /mnt base base-devel
+pacstrap /mnt base base-devel grub os-prober
 clear
 
 #generate fstab
@@ -82,17 +82,20 @@ clear
 #getting hostname
 echo "Please enter a hostname for your computer in all lowercase."
 read hnpc
+clear
 
 #getting sudo choice
 echo "We need to set up sudo permissions for your system."
 echo "There are 2 options. You can require a password to use sudo, or not require a password."
 echo "Would you like to be prompted for a password when using sudo to elevate permissions? Enter y/n"
 read sudoyn
+clear
 
 #getting AUR choice
 echo "Would you like to install support for the Arch User Repository?"
 echo "Enter y/n"
 read aur
+clear
 
 #generate locale
 echo "Generating Locale..."
@@ -100,11 +103,14 @@ echo en_US.UTF-8 UTF-8 >> /mnt/etc/locale.gen
 arch_chroot "locale-gen"
 echo "LANG=en_US.UTF-8" > /mnt/etc/locale.conf
 export LANG=en_US.UTF-8
+clear
 
 #setting timezone
 echo "Setting Timezone..."
 arch_chroot "ln -s /usr/share/zoneinfo/America/Chicago /etc/localtime"
 date
+sleep 2
+clear
 
 #setting hw clock
 echo "Setting System Clock as UTC..."
@@ -121,22 +127,20 @@ clear
 #setting sudo permissions
 echo "Setting sudo permissions..."
 	if [ "$sudoyn" = "y" ]
-		then mv /mnt/etc/sudoers /mnt/etc/sudoers.backup
-		cp /arch_scripts/sudoers.passwd /mnt/etc/sudoers
+		then echo "%wheel ALL=(ALL) ALL" /mnt/etc/sudoers
 
-		else mv /mnt/etc/sudoers /mnt/etc/sudoers.backup
-		cp arch_scripts/sudoers.nopasswd /mnt/etc/sudoers
+		else echo "%wheel ALL=(ALL) NOPASSWD: ALL" /mnt/etc/sudoers
 	fi
 sleep 3
 clear
 
 #AUR support
+echo "Enabling Arch User Repository Support..."
 	if [ "$aur" = "y" ]
-		then mv /mnt/etc/pacman.conf /mnt/etc/pacman.conf.backup
-		cp arch_scripts/pacman.conf /mnt/etc/pacman.conf
-		cp arch_scripts/pacman.conf /etc/pacman.conf
-		echo "Setting AUR support. Bonus! Colors and ILoveCandy activated as well!!!"
-		sleep 5
+		then echo "[archlinuxfr]" /mnt/etc/pacman.conf
+		echo "SigLevel = Never" /mnt/etc/pacman.conf
+		echo "Server = http://repo.archlinux.fr/$arch"
+		sleep 2
 		arch_chroot "pacman -Syy"
 		pacstrap /mnt yaourt
 	fi
@@ -151,8 +155,8 @@ clear
 #installing grub
 echo "Please enter the drive where you want the bootloader to be installed in /dev/sdx format."
 read bldrive
+clear
 echo "Installing Bootloader..."
-pacstrap /mnt grub os-prober
 arch_chroot "grub-install $bldrive"
 arch_chroot "grub-mkconfig -o /boot/grub/grub.cfg"
 clear
@@ -162,10 +166,12 @@ echo "Installing additional packages for video, audio, and drivers..."
 clear
 pacstrap /mnt xf86-video-ati xorg-server xorg-server-utils xorg-xinit xorg-twm xterm alsa-utils pulseaudio pulseaudio-alsa volumeicon parcellite
 clear
+echo "Installing networking and other utilities..."
 pacstrap /mnt networkmanager network-manager-applet networkmanager-dispatcher-ntpd xf86-input-synaptics xdg-user-dirs gvfs file-roller ttf-dejavu libmtp gvfs-mtp git wpa_supplicant dialog iw reflector rsync mlocate bash-completion
 clear
 
 #desktop manager
+echo "Installing a desktop manager..."
 pacstrap /mnt lightdm lightdm-gtk-greeter lightdm-gtk-greeter-settings
 clear
 
@@ -182,12 +188,12 @@ echo "6 - i3"
 echo "7 - None, I will set up my own desktop."
 read desktop;
 	case $desktop in
-		1) arch_chroot "pacman -S --noconfirm gnome";;
-		2) arch_chroot "pacman -S --noconfirm plasma";;
-		3) arch_chroot "pacman -S --noconfirm xfce4";;
-		4) arch_chroot "pacman -S --noconfirm lxde";;
-		5) arch_chroot "pacman -S --noconfirm mate";;
-		6) chmod +x i3config/i3install.sh;i3config/i3install.sh;;
+		1) pacstrap /mnt gnome;;
+		2) pacstrap /mnt plasma;;
+		3) pacstrap /mnt xfce4;;
+		4) pacstrap /mnt lxde;;
+		5) pacstrap /mnt mate;;
+		6) pacstrap /mnt i3 dmenu;;
 		7) echo "Cool, we are almost done.";;
 		*) echo "Not a valid selection"
 			sleep 3;;
@@ -195,6 +201,8 @@ esac
 clear
 
 #starting services
+echo "Enabling netowrk and desktop managaer services..."
+sleep 2
 arch_chroot "systemctl enable NetworkManager"
 arch_chroot "systemctl enable lightdm.service"
 clear
@@ -202,7 +210,7 @@ clear
 #User choice packages
 echo "If you would like to install additional packages now, such as Firefox or VLC,"
 echo "please type in the package names seperated by a space"
-echo "Example: vlc firefox leafpad"
+echo "Example: vlc firefox leafpad vim"
 read userpacks
 arch_chroot "pacman -S --noconfirm $userpacks"
 clear
