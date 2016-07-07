@@ -139,7 +139,7 @@ echo "Enabling Arch User Repository Support..."
 	if [ "$aur" = "y" ]
 		then echo "[archlinuxfr]" >> /mnt/etc/pacman.conf
 		echo "SigLevel = Never" >> /mnt/etc/pacman.conf
-		echo "Server = http://repo.archlinux.fr/$arch" >> /mnt/etc/pacman.conf
+		echo "Server = http://repo.archlinux.fr/\$arch" >> /mnt/etc/pacman.conf
 		sleep 2
 		arch_chroot "pacman -Syy"
 		pacstrap /mnt yaourt
