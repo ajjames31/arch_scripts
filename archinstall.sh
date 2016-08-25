@@ -1,7 +1,13 @@
 #!/bin/bash
-
-
+#
+#
 #This is a script to install Arch Linux
+#By Jody James
+#
+# This program is free software, provided under the GNU General Public License
+# as published by the Free Software Foundation. So feel free to copy, distribute,
+# or modify it as you wish.
+#
 clear
 echo "===================================="
 echo "Arch Linux Install Script"
